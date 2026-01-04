@@ -298,7 +298,7 @@ function addMoney(amount) {
 
 function prepareAndPreload() {
     preparedCards = [];
-    isGodPack = Math.random() < 0.05; 
+    isGodPack = Math.random() < 0.005; 
 
     if (isGodPack) {
         totalGodPacks++;
@@ -730,3 +730,4 @@ function launchGodConfetti() {
     }
 
 }
+
