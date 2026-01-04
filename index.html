@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pocket Sim Deluxe</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://www.media.pokekalos.fr">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="bg-gradient"></div>
+    <div class="bg-noise"></div>
+    <div id="particles-container"></div> 
+    
+    <button id="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+
+    <div class="app-layout">
+        
+        <aside class="sidebar" id="sidebar">
+            <header class="brand">
+                <h1>POCKET<span class="text-accent">SIM</span></h1>
+                <p class="subtitle">COLLECTOR DELUXE</p>
+            </header>
+
+            <div class="booster-stats-box">
+                <div class="level-row">
+                    <div class="level-info">
+                        <span class="stat-label">NIVEAU</span>
+                        <span id="user-level" class="level-val">1</span>
+                    </div>
+                    <div class="xp-track">
+                        <div id="xp-bar" class="xp-fill"></div>
+                    </div>
+                    <small id="xp-text" class="xp-text">0 / 500 XP</small>
+                </div>
+
+                <div class="stats-divider"></div>
+
+                <div class="counters-row">
+                    <div class="stat-item">
+                        <span class="stat-label">SESSION</span>
+                        <span id="session-count" class="stat-value">0</span>
+                    </div>
+                    <div class="stat-separator"></div>
+                    <div class="stat-item">
+                        <span class="stat-label">TOTAL</span>
+                        <span id="total-count" class="stat-value">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <button class="shop-btn-sidebar" onclick="toggleShop()">
+                <span class="shop-icon">🛒</span> BOUTIQUE DU SET
+                <span class="shop-timer-badge" id="sidebar-shop-timer">02:00</span>
+            </button>
+
+            <div class="nav-scroll">
+                <div class="nav-label">SÉLECTION DU BOOSTER</div>
+                <div id="set-buttons-container"></div>
+            </div>
+
+            <div class="user-stats" onclick="toggleAlbum()">
+                <div class="stats-row">
+                    <span class="stats-label">TOTAL GLOBAL</span>
+                    <span id="collection-percent" class="stats-value">0%</span>
+                </div>
+                <div class="progress-track">
+                    <div class="progress-fill" id="collection-bar"></div>
+                </div>
+                <div class="stats-footer">
+                    <small id="collection-count">0 / 0 cartes</small>
+                    <span class="open-album-hint">OUVRIR L'ALBUM</span>
+                </div>
+            </div>
+        </aside>
+
+        <main class="stage">
+            
+            <div class="currency-box">
+                <div class="coin-icon">©</div>
+                <span id="user-money">0</span>
+            </div>
+
+            <div class="top-hud">
+                <h2 id="hud-set-title"></h2>
+                <div class="hud-stats-container">
+                    <span id="hud-set-count">0/0</span>
+                    <div class="hud-progress-track">
+                        <div id="hud-set-bar" class="hud-progress-fill"></div>
+                    </div>
+                    <span id="hud-set-percent">0%</span>
+                </div>
+            </div>        
+
+            <section id="view-booster" class="view active">
+                <div class="booster-wrapper">
+                    <div class="booster-container" onclick="startOpeningSequence()">
+                        <div class="booster-glow"></div>
+                        <img id="booster-img" src="" alt="Booster Pack">
+                        <div class="booster-flash"></div>
+                    </div>
+                    <div class="tap-hint">TOUCHER POUR OUVRIR (+10 XP)</div>
+                </div>
+                <h2 id="booster-set-title" class="set-title">Chargement...</h2>
+            </section>
+
+            <section id="view-opening" class="view hidden">
+                <div id="cards-grid"></div>
+                
+                <div class="actions">
+                    <button id="btn-next" class="btn-primary hidden" onclick="startOpeningSequence()">
+                        OUVRIR UN AUTRE
+                    </button>
+                    <button id="btn-change" class="btn-secondary hidden" onclick="returnToBooster()">
+                        RETOUR AU MENU
+                    </button>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <button class="btn-reset" onclick="confirmReset()" title="Réinitialiser la collection">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 12"/></svg>
+    </button>
+
+    <div id="album-overlay" class="overlay hidden">
+        <div class="overlay-glass">
+            <header class="overlay-header">
+                <div class="header-left">
+                    <h2>ALBUM</h2>
+                    <div class="filter-pills">
+                        <button class="filter-btn active" onclick="filterAlbum('all')">Tout</button>
+                        <button class="filter-btn" onclick="filterAlbum('owned')">Possédées</button>
+                        <button class="filter-btn" onclick="filterAlbum('missing')">Manquantes</button>
+                    </div>
+                </div>
+                <div class="header-right" style="display:flex; align-items:center; gap:20px;">
+                    <button class="btn-sell-dupes" onclick="sellDuplicates()">
+                        VENDRE DOUBLONS
+                    </button>
+                    <button class="btn-close" onclick="toggleAlbum()">&times;</button>
+                </div>  
+            </header>
+            <div id="album-content" class="overlay-scroll"></div>
+        </div>
+    </div>
+
+    <div id="shop-overlay" class="overlay hidden">
+        <div class="overlay-glass shop-glass">
+            <header class="overlay-header">
+                <div class="header-left">
+                    <h2>BOUTIQUE ÉPHÉMÈRE</h2>
+                    <div class="shop-timer-container">
+                        Actualisation dans : <span id="shop-countdown">02:00</span>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="shop-wallet">Solde : <span id="shop-user-money" style="color:var(--gold)">0</span> ©</div>
+                    <button class="btn-close" onclick="toggleShop()">&times;</button>
+                </div>
+            </header>
+            <div class="shop-info-bar">
+                Cartes manquantes du set actuel uniquement.
+                <button class="btn-refresh-shop" onclick="forceShopRefresh()">Actualiser (50©)</button>
+            </div>
+            <div id="shop-content" class="overlay-scroll shop-grid"></div>
+        </div>
+    </div>
+
+    <div id="zoom-overlay" class="overlay hidden flex-center" onclick="closeZoom()">
+        <img id="zoom-img" src="" alt="Zoom Carte">
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
