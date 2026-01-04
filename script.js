@@ -253,7 +253,7 @@ function buyCard(cardId, price) {
         myCollection.push(cardId);
         saveData();
         updateStats();
-        
+        document.getElementById('album-content').innerHTML = '';        
         // Retirer la carte du shop (visuellement et logiquement)
         shopCards = shopCards.filter(c => c.id !== cardId);
         renderShop();
@@ -404,6 +404,7 @@ function performDraw() {
             myCollection.push(cardData.id);
             saveData();
             updateStats();
+            document.getElementById('album-content').innerHTML = '';
 
             if(isRare) {
                 setTimeout(() => {
@@ -537,10 +538,13 @@ function filterAlbum(filterType) {
 
 function renderAlbum(force = false) {
     const container = document.getElementById('album-content');
-    if(container.childElementCount > 0 && !force) {
+    if(container.innerHTML !== '' && !force) {
         refreshAlbumStatus();
         return;
     }
+    
+    container.innerHTML = ''; // On vide pour reconstruire proprement
+    // ... reste du code inchangé
     
     container.innerHTML = ''; 
 
