@@ -67,12 +67,18 @@ function generateSidebar() {
         btn.className = 'set-btn';
         btn.id = `btn-${set.id}`;
         
+        // Rétablir l'état "active" si c'est le set en cours
+        if (currentSet && set.id === currentSet.id) {
+            btn.classList.add('active');
+        }
+        
         const isLocked = userLevel < set.reqLevel;
 
         if (isLocked) {
             btn.classList.add('locked');
             btn.innerHTML = `${set.name} <span class="lock-icon">🔒 Lvl ${set.reqLevel}</span>`;
         } else {
+            // Logique de vérification de complétion
             const uniqueCardsInSet = new Set(myCollection.filter(id => id.startsWith(set.apiId)));
             const isCompleted = uniqueCardsInSet.size >= set.count;
             btn.innerHTML = `${set.name} ${isCompleted ? '<span style="color: #10b981; float: right; font-weight: bold;">✓</span>' : ''}`;
@@ -298,7 +304,7 @@ function addMoney(amount) {
 
 function prepareAndPreload() {
     preparedCards = [];
-    isGodPack = Math.random() < 0.005; 
+    isGodPack = Math.random() < 0.5; 
 
     if (isGodPack) {
         totalGodPacks++;
@@ -698,7 +704,10 @@ function sellDuplicates() {
 }
 
 
-function saveData() { localStorage.setItem('tcgCollection', JSON.stringify(myCollection)); }
+function saveData() { 
+    localStorage.setItem('tcgCollection', JSON.stringify(myCollection)); 
+    generateSidebar();
+}
 
 function confirmReset() {
     if(confirm("Voulez-vous vraiment tout réinitialiser (Collection, Argent, Niveau) ?")) {
@@ -728,6 +737,4 @@ function launchGodConfetti() {
         container.appendChild(p);
         setTimeout(() => p.remove(), duration * 1000);
     }
-
 }
-
