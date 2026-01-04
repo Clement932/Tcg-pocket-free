@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Pocket Sim Deluxe</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://www.media.pokekalos.fr">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -28,8 +29,8 @@
             <div class="booster-stats-box">
                 <div class="level-row">
                     <div class="level-info">
-                        <span class="stat-label">NIVEAU <span id="user-level" class="level-val">1</span></span>
-                        <span class="stat-label rank-label">RANG: <span id="collection-rank" style="color:var(--gold)">Novice</span></span>
+                        <span class="stat-label">NIVEAU</span>
+                        <span id="user-level" class="level-val">1</span>
                     </div>
                     <div class="xp-track">
                         <div id="xp-bar" class="xp-fill"></div>
@@ -37,40 +38,46 @@
                     <small id="xp-text" class="xp-text">0 / 500 XP</small>
                 </div>
 
+                <div class="energy-row" style="margin-top: 15px;">
+                    <div class="level-info">
+                        <span class="stat-label">BOOSTER ENERGY</span>
+                        <span id="energy-val" class="level-val" style="color:var(--accent)">0/10</span>
+                    </div>
+                    <div class="xp-track">
+                        <div id="energy-bar" class="energy-fill"></div>
+                    </div>
+                    <small class="xp-text">Prochain Pack Premium garanti !</small>
+                </div>
+
                 <div class="stats-divider"></div>
 
-                <div class="mini-missions">
-                    <div class="nav-label" style="margin-bottom:8px;">MISSIONS DU JOUR</div>
-                    <div id="mini-missions-list">
-                        </div>
+                <div class="counters-row">
+                    <div class="stat-item">
+                        <span class="stat-label">SESSION</span>
+                        <span id="session-count" class="stat-value">0</span>
+                    </div>
+                    <div class="stat-separator"></div>
+                    <div class="stat-item">
+                        <span class="stat-label">TOTAL</span>
+                        <span id="total-count" class="stat-value">0</span>
+                    </div>
                 </div>
             </div>
 
-            <div class="sidebar-actions">
-                <button class="shop-btn-sidebar" onclick="toggleShop()">
-                    <div style="display:flex; align-items:center; gap:8px;">
-                        <span class="shop-icon">🛒</span> BOUTIQUE
-                    </div>
-                    <span class="shop-timer-badge" id="sidebar-shop-timer">00:00</span>
-                </button>
+            <button class="shop-btn-sidebar" onclick="toggleShop()">
+                <span class="shop-icon">🛒</span> BOUTIQUE DU SET
+                <span class="shop-timer-badge" id="sidebar-shop-timer">02:00</span>
+            </button>
 
-                <button class="shop-btn-sidebar craft-btn" onclick="toggleCraft()">
-                    <div style="display:flex; align-items:center; gap:8px;">
-                        <span class="shop-icon">🧪</span> LABO
-                    </div>
+            <div class="sidebar-games">
+                <button class="game-btn" onclick="openGameMenu()">
+                    <span>🎮</span> ZONE DE JEUX <span id="notif-games" class="notif-dot hidden"></span>
                 </button>
-
-                <button class="shop-btn-sidebar stats-btn" onclick="toggleProfile()">
-                    <div style="display:flex; align-items:center; gap:8px;">
-                        <span class="shop-icon">💾</span> PROFIL & SAVE
-                    </div>
+                <button class="game-btn" onclick="toggleQuests()">
+                    <span>📜</span> QUÊTES & SUCCÈS <span id="notif-quests" class="notif-dot hidden"></span>
                 </button>
-
-                <button class="shop-btn-sidebar achievement-btn" onclick="toggleAchievements()">
-                    <div style="display:flex; align-items:center; gap:8px;">
-                        <span class="shop-icon">🏆</span> SUCCÈS
-                    </div>
-                    <span class="shop-timer-badge" id="achievements-badge">0/10</span>
+                <button class="game-btn" onclick="openStats()">
+                    <span>📈</span> STATISTIQUES
                 </button>
             </div>
 
@@ -81,7 +88,7 @@
 
             <div class="user-stats" onclick="toggleAlbum()">
                 <div class="stats-row">
-                    <span class="stats-label">COLLECTION</span>
+                    <span class="stats-label">TOTAL GLOBAL</span>
                     <span id="collection-percent" class="stats-value">0%</span>
                 </div>
                 <div class="progress-track">
@@ -90,6 +97,10 @@
                 <div class="stats-footer">
                     <small id="collection-count">0 / 0 cartes</small>
                     <span class="open-album-hint">OUVRIR L'ALBUM</span>
+                </div>
+                <div class="god-pack-counter" style="margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+                    <span class="stat-label" style="color: var(--gold); font-size: 10px;">GOD PACKS</span>
+                    <span id="god-pack-count" style="color: var(--gold); font-family: var(--font-tech); font-size: 16px; font-weight: 700; text-shadow: 0 0 10px rgba(251, 191, 36, 0.4);">0</span>
                 </div>
             </div>
         </aside>
@@ -110,6 +121,9 @@
                     </div>
                     <span id="hud-set-percent">0%</span>
                 </div>
+                <div id="set-mastery-badge" class="hidden" style="margin-top:5px; color:var(--gold); font-size:12px; font-weight:bold; text-shadow:0 0 10px var(--gold);">
+                    ★ MAÎTRISE DU SET (CHANCE +5%) ★
+                </div>
             </div>        
 
             <section id="view-booster" class="view active">
@@ -119,10 +133,10 @@
                         <img id="booster-img" src="" alt="Booster Pack">
                         <div class="booster-flash"></div>
                     </div>
-                    <div class="price-tag-container">
-                        <div class="price-tag">COÛT : <span id="booster-cost">100</span> ©</div>
-                        <div class="tap-hint">TOUCHER POUR OUVRIR (+15 XP)</div>
+                    <div class="booster-price-tag">
+                        COÛT: 100 ©
                     </div>
+                    <div class="tap-hint">TOUCHER POUR OUVRIR (+10 XP)</div>
                 </div>
                 <h2 id="booster-set-title" class="set-title">Chargement...</h2>
             </section>
@@ -131,7 +145,7 @@
                 <div id="cards-grid"></div>
                 
                 <div class="actions">
-                    <button id="btn-next" class="btn-primary hidden" onclick="resetForNewPack()">
+                    <button id="btn-next" class="btn-primary hidden" onclick="startOpeningSequence()">
                         OUVRIR UN AUTRE (-100©)
                     </button>
                     <button id="btn-change" class="btn-secondary hidden" onclick="returnToBooster()">
@@ -140,8 +154,20 @@
                 </div>
             </section>
 
+            <div id="showcase-shelf" class="showcase-container">
+                <div class="showcase-slot" onclick="openShowcaseSelect(0)"><span class="empty-slot">+</span></div>
+                <div class="showcase-slot" onclick="openShowcaseSelect(1)"><span class="empty-slot">+</span></div>
+                <div class="showcase-slot" onclick="openShowcaseSelect(2)"><span class="empty-slot">+</span></div>
+                <div class="showcase-slot" onclick="openShowcaseSelect(3)"><span class="empty-slot">+</span></div>
+                <div class="showcase-slot" onclick="openShowcaseSelect(4)"><span class="empty-slot">+</span></div>
+            </div>
+
         </main>
     </div>
+
+    <button class="btn-reset" onclick="confirmReset()" title="Réinitialiser la collection">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 12"/></svg>
+    </button>
 
     <div id="album-overlay" class="overlay hidden">
         <div class="overlay-glass">
@@ -153,10 +179,11 @@
                         <button class="filter-btn" onclick="filterAlbum('owned')">Possédées</button>
                         <button class="filter-btn" onclick="filterAlbum('missing')">Manquantes</button>
                     </div>
+                    <input type="text" id="album-search" class="search-input" placeholder="🔍 Rechercher (Nom/ID)..." onkeyup="renderAlbum(true)">
                 </div>
                 <div class="header-right" style="display:flex; align-items:center; gap:20px;">
                     <button class="btn-sell-dupes" onclick="sellDuplicates()">
-                        VENDRE TOUS LES DOUBLONS
+                        VENDRE DOUBLONS
                     </button>
                     <button class="btn-close" onclick="toggleAlbum()">&times;</button>
                 </div>  
@@ -165,13 +192,55 @@
         </div>
     </div>
 
+    <div id="showcase-overlay" class="overlay hidden">
+        <div class="overlay-glass" style="max-width: 800px;">
+            <header class="overlay-header">
+                <h2>CHOISIR UNE CARTE POUR LA VITRINE</h2>
+                <button class="btn-close" onclick="closeShowcaseSelect()">&times;</button>
+            </header>
+            <div id="showcase-list" class="overlay-scroll" style="display: flex; flex-wrap: wrap; gap: 15px; justify-content: center;">
+                </div>
+        </div>
+    </div>
+
+    <div id="stats-overlay" class="overlay hidden">
+        <div class="overlay-glass" style="max-width: 600px; height: auto; max-height: 80vh;">
+            <header class="overlay-header">
+                <h2>STATISTIQUES JOUEUR</h2>
+                <button class="btn-close" onclick="openStats()">&times;</button>
+            </header>
+            <div class="overlay-scroll stats-grid">
+                <div class="stat-card">
+                    <span class="stat-title">Temps de Jeu (Session)</span>
+                    <span id="stat-time" class="stat-number">0m</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-title">Argent Dépensé</span>
+                    <span id="stat-spent" class="stat-number">0 ©</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-title">Clics Totaux</span>
+                    <span id="stat-clicks" class="stat-number">0</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-title">Taux de Complétion</span>
+                    <span id="stat-rate" class="stat-number">0%</span>
+                </div>
+                <div class="stat-card full-width">
+                    <span class="stat-title">Meilleure Rareté Trouvée</span>
+                    <div id="stat-best-card" style="margin-top:10px; font-weight:bold; color:var(--gold);">Aucune</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="shop-overlay" class="overlay hidden">
         <div class="overlay-glass shop-glass">
             <header class="overlay-header">
                 <div class="header-left">
-                    <h2>BOUTIQUE</h2>
+                    <h2>BOUTIQUE ÉPHÉMÈRE</h2>
                     <div class="shop-timer-container">
-                        Reset : <span id="shop-countdown">00:00</span>
+                        Actualisation dans : <span id="shop-countdown">02:00</span>
                     </div>
                 </div>
                 <div class="header-right">
@@ -180,84 +249,88 @@
                 </div>
             </header>
             <div class="shop-info-bar">
-                <span id="shop-message">Cartes à l'unité.</span>
+                Cartes manquantes du set actuel uniquement.
                 <button class="btn-refresh-shop" onclick="forceShopRefresh()">Actualiser (50©)</button>
             </div>
             <div id="shop-content" class="overlay-scroll shop-grid"></div>
         </div>
     </div>
 
-    <div id="achievements-overlay" class="overlay hidden">
-        <div class="overlay-glass">
-            <header class="overlay-header">
-                <div class="header-left">
-                    <h2>SUCCÈS</h2>
-                </div>
-                <div class="header-right">
-                    <button class="btn-close" onclick="toggleAchievements()">&times;</button>
-                </div>
-            </header>
-            <div id="achievements-content" class="overlay-scroll achievements-grid"></div>
-        </div>
-    </div>
-
-    <div id="craft-overlay" class="overlay hidden">
-        <div class="overlay-glass">
-            <header class="overlay-header">
-                <h2>LABORATOIRE DE FUSION</h2>
-                <button class="btn-close" onclick="toggleCraft()">&times;</button>
-            </header>
-            <div class="craft-container">
-                <div class="craft-panel">
-                    <h3>RECYCLAGE MOLECULAIRE</h3>
-                    <p>Fusionnez 5 cartes COMMUNES pour obtenir 1 carte RARE aléatoire.</p>
-                    <div class="craft-visual">
-                        <div class="card-stack">5x <span style="color:var(--c-common)">Commune</span></div>
-                        <div class="arrow">➜</div>
-                        <div class="card-result">1x <span style="color:var(--c-rare)">Rare</span></div>
-                    </div>
-                    <button id="btn-craft" class="btn-primary" onclick="craftCards()">LANCER LA FUSION</button>
-                    <p id="craft-msg" style="margin-top:15px; font-size:12px; color:#aaa;"></p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="profile-overlay" class="overlay hidden">
-        <div class="overlay-glass" style="max-width:600px; height:auto; max-height:90vh;">
-            <header class="overlay-header">
-                <h2>PROFIL & DONNÉES</h2>
-                <button class="btn-close" onclick="toggleProfile()">&times;</button>
-            </header>
-            <div class="overlay-scroll" style="padding:30px; text-align:center;">
-                <div class="stats-grid-profile">
-                    <div class="stat-box">
-                        <div class="label">Valeur Collection</div>
-                        <div class="value" id="profile-value">0 pts</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="label">Boosters Ouverts</div>
-                        <div class="value" id="profile-opened">0</div>
-                    </div>
-                </div>
-
-                <hr style="border-color:var(--border); margin:20px 0; opacity:0.3;">
-
-                <h3>SAUVEGARDE / TRANSFERT</h3>
-                <p style="font-size:12px; color:#aaa; margin-bottom:10px;">Copiez ce code pour transférer votre partie sur un autre appareil.</p>
-                <textarea id="save-data-area" readonly onclick="this.select()"></textarea>
-                
-                <div class="save-actions">
-                    <button class="btn-secondary" onclick="exportSave()">COPIER LE CODE</button>
-                    <button class="btn-secondary" onclick="importSave()">IMPORTER LE CODE</button>
-                    <button class="btn-reset-full" onclick="confirmReset()">RÉINITIALISER TOUT</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div id="zoom-overlay" class="overlay hidden flex-center" onclick="closeZoom()">
-        <img id="zoom-img" src="" alt="Zoom Carte">
+        <div class="zoom-3d-container">
+            <img id="zoom-img" src="" alt="Zoom Carte">
+            <div class="zoom-shine"></div>
+        </div>
+        <div class="zoom-hint">Bougez la souris pour inspecter</div>
+    </div>
+
+    <div id="quest-overlay" class="overlay hidden">
+        <div class="overlay-glass">
+            <header class="overlay-header">
+                <h2>JOURNAL DE BORD</h2>
+                <div class="filter-pills">
+                    <button id="tab-quests" class="filter-btn active" onclick="switchQuestTab('daily')">Quêtes</button>
+                    <button id="tab-achievements" class="filter-btn" onclick="switchQuestTab('achievements')">Succès</button>
+                </div>
+                <button class="btn-close" onclick="toggleQuests()">&times;</button>
+            </header>
+            <div id="quest-content" class="overlay-scroll" style="padding:20px;">
+                </div>
+        </div>
+    </div>
+
+    <div id="games-overlay" class="overlay hidden">
+        <div class="overlay-glass" style="max-width: 900px;">
+            <header class="overlay-header">
+                <h2>ZONE DE JEUX</h2>
+                <button class="btn-close" onclick="openGameMenu()">&times;</button>
+            </header>
+            
+            <div class="games-hub overlay-scroll">
+                
+                <div class="game-card">
+                    <h3>🎡 ROUE DE LA FORTUNE</h3>
+                    <p>Un tour gratuit toutes les 4h !</p>
+                    <div class="wheel-container">
+                        <div id="wheel" class="wheel">
+                            <div class="wheel-section" style="--i:1; --clr:#3b82f6;"><span>XP</span></div>
+                            <div class="wheel-section" style="--i:2; --clr:#fbbf24;"><span>$$</span></div>
+                            <div class="wheel-section" style="--i:3; --clr:#ef4444;"><span>NRJ</span></div>
+                            <div class="wheel-section" style="--i:4; --clr:#10b981;"><span>XP</span></div>
+                            <div class="wheel-section" style="--i:5; --clr:#8b5cf6;"><span>$$</span></div>
+                            <div class="wheel-section" style="--i:6; --clr:#f472b6;"><span>???</span></div>
+                        </div>
+                        <div class="wheel-marker">▼</div>
+                    </div>
+                    <button id="btn-spin" class="btn-primary" onclick="spinWheel()">TOURNER</button>
+                    <div id="wheel-timer" class="timer-text">Prêt !</div>
+                </div>
+
+                <div class="game-card">
+                    <h3>⚔️ BATAILLE DE CARTES</h3>
+                    <p>Misez 50©. La carte la plus rare gagne 150© !</p>
+                    <div id="battle-area" class="hidden">
+                        <div class="battle-row">
+                            <div class="battle-slot" id="user-battle-card">
+                                <span>VOUS</span>
+                            </div>
+                            <div class="vs-text">VS</div>   
+                            <div class="battle-slot" id="cpu-battle-card">
+                                <span>CPU</span>
+                            </div>
+                        </div>
+                        <div id="battle-result"></div>
+                    </div>
+                    <button id="btn-battle" class="btn-primary" onclick="startBattle()">COMBATTRE (50©)</button>
+                </div>
+
+                <div class="game-card">
+                    <h3>🔮 ÉCHANGE MIRACLE</h3>
+                    <p>Sacrifiez un DOUBLON pour une carte MANQUANTE.</p>
+                    <button class="btn-secondary" onclick="startWonderTrade()">LANCER L'ÉCHANGE</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="script.js"></script>
